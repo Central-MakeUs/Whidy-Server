@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  study_map:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: jdbc:mysql://db:3306/study_map?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+      DATABASE_USER: study_map
+      DATABASE_PWD: study_map
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      GOOGLE_REDIRECT_URL: mobile-dir
+      KAKAO_REDIRECT_URL: mobile-dir
+      APPLE_REDIRECT_URL: mobile-dir
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql:8.0
+    container_name: study_map_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: study_map
+      MYSQL_USER: study_map
+      MYSQL_PASSWORD: study_map
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  redis:
+    image: redis:7
+    container_name: study_map_redis
+    restart: always
+    ports:
+      - "6380:6379"
+
+volumes:
+  db-data:
