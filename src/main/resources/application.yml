@@ -1,0 +1,87 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PWD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: 2000ms
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+application:
+  property:
+    oauth-state:
+      ttl-minute: 10
+    signup-info:
+      ttl-minute: 2
+  secret-key: ${SECRET_KEY}
+  expiration-time:
+    access-token: 3600000
+    refresh-token: 2592000000
+oauth:
+  apple:
+    client_id: ${APPLE_CLIENT_ID}
+    team_id: ${APPLE_TEAM_ID}
+    key_id: ${APPLE_KEY_ID}
+    private_key: ${APPLE_PRIVATE_KEY}
+    redirect_uri: ${APPLE_REDIRECT_URL}
+  google:
+    client_id: ${GOOGLE_CLIENT_ID}
+    client_secret: ${GOOGLE_CLIENT_SECRET}
+    redirect_uri: ${GOOGLE_REDIRECT_URL}
+    authorization_grant_type : authorization_code
+    scope: https://www.googleapis.com/auth/userinfo#email
+  kakao:
+    client_id: ${KAKAO_CLIENT_ID}
+    client_secret: ${KAKAO_CLIENT_SECRET}
+    redirect_uri: ${KAKAO_REDIRECT_URL}
+    authorization_grant_type: authorization_code
+    client_authentication_method: client_secret_post
+    scope: account_email
+  naver:
+    client_id: aaa
+    client_secret: aaa
+    redirect_uri: aaa
+    authorization_grant_type: authorization_code
+    client_authentication_method: client_secret_basic
+    scope:
+      - name
+      - email
+      - mobile
+    client_name: Naver
+  provider:
+    apple:
+      authorization_uri: https://appleid.apple.com/auth/authorize
+      token_uri: https://appleid.apple.com/auth/token
+      server_domain: https://appleid.apple.com
+    google:
+      authorization_uri: https://accounts.google.com/o/oauth2/v2/auth
+      token_uri: https://oauth2.googleapis.com/token
+      user_info_uri: https://www.googleapis.com/oauth2/v3/userinfo
+      user_name_attribute: id
+    kakao:
+      authorization_uri: https://kauth.kakao.com/oauth/authorize
+      token_uri: https://kauth.kakao.com/oauth/token
+      user_info_uri: https://kapi.kakao.com/v2/user/me
+      user_name_attribute: id
+    naver:
+      authorization_uri: https://nid.naver.com/oauth2.0/authorize
+      token_uri: https://nid.naver.com/oauth2.0/token
+      user_info_uri: https://openapi.naver.com/v1/nid/me
+      user_name_attribute: response
+  url:
+    success: whidy://home
+#    success: http://localhost:3000/home
+    fail: whidy://sign-up
+#    fail: http://localhost:3000/sign-up
