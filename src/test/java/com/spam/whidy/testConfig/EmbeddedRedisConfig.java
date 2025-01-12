@@ -1,28 +1,36 @@
 package com.spam.whidy.testConfig;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import org.springframework.boot.test.context.TestConfiguration;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 
-@TestConfiguration
+//@TestConfiguration
 public class EmbeddedRedisConfig {
 
     private final RedisServer redisServer;
 
-    public EmbeddedRedisConfig() throws IOException {
-        this.redisServer = new RedisServer(6390);
+    public EmbeddedRedisConfig() throws Exception{
+        int port = getAvailablePort();
+        redisServer = new RedisServer(port);
+        System.setProperty("spring.data.redis.port", String.valueOf(port));
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void startRedis() throws IOException {
         redisServer.start();
     }
 
-    @PreDestroy
+//    @PreDestroy
     public void stopRedis() throws IOException {
-        redisServer.stop();
+        if (redisServer != null && redisServer.isActive()) {
+            redisServer.stop();
+        }
+    }
+
+    private int getAvailablePort() throws IOException {
+        try (ServerSocket socket = new ServerSocket(0)) {
+            return socket.getLocalPort();
+        }
     }
 }

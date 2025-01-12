@@ -6,12 +6,12 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
   data:
     redis:
       host: localhost
-      port: 6390
+      port: 6380
   config:
     activate:
       on-profile: test
@@ -78,6 +78,6 @@ oauth:
       user_name_attribute: response
   url:
     success: whidy://home
-    #    success: http://localhost:3000/home
+#    success: http://localhost:3000/home
     fail: whidy://sign-up
 #    fail: http://localhost:3000/sign-up

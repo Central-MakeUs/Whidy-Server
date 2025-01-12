@@ -51,7 +51,6 @@ public class AppleUserClient implements OauthUserClient {
             SignedJWT signedJWT = SignedJWT.parse(token.getIdToken());
             String userId = signedJWT.getJWTClaimsSet().getSubject();
             String email = (String) signedJWT.getJWTClaimsSet().getClaim("email");
-//            boolean emailVerified = (boolean) signedJWT.getJWTClaimsSet().getClaim("email_verified");
             return User.of(email, OAuthType.APPLE, userId);
         }catch (Exception e){
             throw new RuntimeException("애플 Oauth : Apple Token 으로부터 User 정보 추출 실패, " + e.getMessage());
