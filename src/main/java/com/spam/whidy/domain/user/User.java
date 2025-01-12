@@ -1,11 +1,14 @@
 package com.spam.whidy.domain.user;
 
+import com.spam.whidy.domain.TimeBaseEntity;
 import com.spam.whidy.domain.auth.oauth.OAuthType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -25,6 +28,17 @@ public class User {
     private OAuthType oauthType;
     @Column(nullable = false)
     private String oauthId;
+    @Column(nullable = false)
+    private LocalDateTime joinDateTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.joinDateTime = LocalDateTime.now();
+    }
+
+    public void update(String name){
+        this.name = name;
+    }
 
     public static User of(String email, String name, OAuthType oauthType, String oauthId){
         User user = new User();

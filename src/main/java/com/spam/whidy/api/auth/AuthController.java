@@ -63,9 +63,9 @@ public class AuthController {
 
     @GetMapping("/{oauthType}")
     @Operation(summary = "oauth 페이지로 redirect",
-            description = "[로그인 성공 시] <b>whidy://home</b> 으로 redirect." +
-                    " <br>[로그인 실패 시] <b>whidy://sign-up</b> 으로 redirect 되며, parameter 에 <b>signUpCode</b> 포함됨." +
-                    " <br><b>signUpCode</b> 는 회원가입 시 사용된다.")
+            description = "[로그인 성공 시] <b>whidy://home</b> 으로 redirect, token 과 refresh token 은 uri parameter 에 포함." +
+                    " <br>[로그인 실패 시] <b>whidy://sign-up</b> 으로 redirect 되며, parameter 에 <b>signUpCode</b> 포함됨. " +
+                    " <b>signUpCode</b> 는 회원가입 시 사용된다.")
     public void redirectToOauthCodeRequestPage(@PathVariable OAuthType oauthType, HttpServletResponse response) throws IOException {
         String pageUrl = authService.getOauthCodeRequestPageUrl(oauthType);
         response.sendRedirect(pageUrl);

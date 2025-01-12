@@ -1,0 +1,13 @@
+package com.spam.whidy.testConfig;
+
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+
+@SpringBootTest
+@Transactional
+//@Import(EmbeddedRedisConfig.class)
+@ActiveProfiles("test")
+public abstract class IntegrationTest {
+
+}
