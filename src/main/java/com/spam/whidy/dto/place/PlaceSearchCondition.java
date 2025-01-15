@@ -1,27 +1,25 @@
 package com.spam.whidy.dto.place;
 
 import com.spam.whidy.domain.place.PlaceType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Set;
 
-@Getter
-@AllArgsConstructor
-public class PlaceSearchCondition {
-
-    private Integer reviewScoreFrom;
-    private Integer reviewScoreTo;
-    private Integer beverageFrom;
-    private Integer beverageTo;
-    private Set<PlaceType> type;
-    private Set<DayOfWeek> businessDayOfWeek;
-    private LocalTime businessTimeFrom;
-    private LocalTime businessTimeTo;
-    private double latitudeFrom; // 남서쪽 위도
-    private double longitudeFrom; // 남서쪽 경도
-    private double latitudeTo; // 북동쪽 위도
-    private double longitudeTo; // 북동쪽 경도
+@Builder
+public record PlaceSearchCondition (
+        Integer reviewScoreFrom,
+        Integer reviewScoreTo,
+        Integer beverageFrom,
+        Integer beverageTo,
+        Set<PlaceType> placeType,
+        Set<DayOfWeek> businessDayOfWeek,
+        LocalTime businessTimeFrom,
+        LocalTime businessTimeTo,
+        double latitudeFrom,
+        double longitudeFrom,
+        double latitudeTo,
+        double longitudeTo
+){
 }
