@@ -1,12 +1,13 @@
 package com.spam.whidy.application;
 
+import com.spam.whidy.application.user.UserFinder;
+import com.spam.whidy.application.user.UserService;
 import com.spam.whidy.domain.auth.oauth.OAuthType;
 import com.spam.whidy.domain.user.User;
 import com.spam.whidy.domain.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional  // 각 테스트 후 롤백
 class UserServiceIntegrationTest {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserFinder userFinder;
+    @Autowired private UserService userService;
+    @Autowired private UserRepository userRepository;
 
     @Test
     @DisplayName("유저 저장 테스트")
@@ -50,7 +49,7 @@ class UserServiceIntegrationTest {
         userService.save(user);
 
         // When
-        Optional<User> foundUser = userService.findByAuthTypeAndAuthId(OAuthType.KAKAO, "oauth-id-456");
+        Optional<User> foundUser = userFinder.findByAuthTypeAndAuthId(OAuthType.KAKAO, "oauth-id-456");
 
         // Then
         assertThat(foundUser).isPresent();
@@ -65,7 +64,7 @@ class UserServiceIntegrationTest {
         userService.save(user);
 
         // When
-        Optional<User> foundUser = userService.findByEmail("email@example.com");
+        Optional<User> foundUser = userFinder.findByEmail("email@example.com");
 
         // Then
         assertThat(foundUser).isPresent();
