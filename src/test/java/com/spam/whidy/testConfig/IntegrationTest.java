@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-//@Import(EmbeddedRedisConfig.class)
 @ActiveProfiles("test")
 public abstract class IntegrationTest {
 

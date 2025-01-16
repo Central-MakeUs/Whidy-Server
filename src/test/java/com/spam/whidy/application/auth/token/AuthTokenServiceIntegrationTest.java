@@ -5,6 +5,7 @@ import com.spam.whidy.common.exception.BadRequestException;
 import com.spam.whidy.common.exception.ExceptionType;
 import com.spam.whidy.domain.auth.AuthToken;
 import com.spam.whidy.domain.auth.AuthTokenRepository;
+import com.spam.whidy.dto.auth.SignOutRequest;
 import com.spam.whidy.testConfig.IntegrationTest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,18 +22,14 @@ import static org.mockito.Mockito.*;
 
 class AuthTokenServiceIntegrationTest extends IntegrationTest {
 
-    @Autowired
-    private AuthTokenService authTokenService;
+    @Autowired private AuthTokenService authTokenService;
 
-    @MockBean
-    private TokenUtil tokenUtil;
-
-    @MockBean
-    private AuthTokenRepository authTokenRepository;
+    @MockBean private TokenUtil tokenUtil;
+    @MockBean private AuthTokenRepository authTokenRepository;
 
     private final Long userId = 1L;
-    private final String accessToken = "mock-access-token";
-    private final String refreshToken = "mock-refresh-token";
+    private final String accessToken = "mock-access-accessToken";
+    private final String refreshToken = "mock-refresh-accessToken";
 
     @BeforeEach
     void setUp() {
@@ -80,7 +77,7 @@ class AuthTokenServiceIntegrationTest extends IntegrationTest {
         // Given
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         when(tokenUtil.getUserIdFromRequest(mockRequest)).thenReturn(userId);
-        when(tokenUtil.resolveTokenFromRequest(mockRequest)).thenReturn("invalid-refresh-token");
+        when(tokenUtil.resolveTokenFromRequest(mockRequest)).thenReturn("invalid-refresh-accessToken");
         when(authTokenRepository.getRefreshToken(userId)).thenReturn(refreshToken);
 
         // When & Then
@@ -95,10 +92,10 @@ class AuthTokenServiceIntegrationTest extends IntegrationTest {
     @DisplayName("토큰 무효화 및 블랙리스트 등록 성공")
     void makeTokenInvalid_success() {
         // Given
-        AuthToken token = new AuthToken(accessToken, refreshToken);
+        SignOutRequest request = new SignOutRequest(accessToken, refreshToken);
 
         // When
-        authTokenService.makeTokenInvalid(token);
+        authTokenService.makeTokenInvalid(request);
 
         // Then
         verify(authTokenRepository, times(1)).deleteRefreshToken(userId);
