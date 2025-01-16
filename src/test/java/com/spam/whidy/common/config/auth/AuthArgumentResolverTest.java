@@ -17,14 +17,10 @@ import static org.mockito.Mockito.*;
 
 class AuthArgumentResolverTest {
 
-    @InjectMocks
-    private AuthArgumentResolver authArgumentResolver;
+    @InjectMocks private AuthArgumentResolver authArgumentResolver;
 
-    @Mock
-    private TokenUtil tokenUtil;
-
-    @Mock
-    private MethodParameter methodParameter;
+    @Mock private TokenUtil tokenUtil;
+    @Mock private MethodParameter methodParameter;
 
     @BeforeEach
     void setUp() {

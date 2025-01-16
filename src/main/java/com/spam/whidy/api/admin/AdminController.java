@@ -14,6 +14,7 @@ import com.spam.whidy.dto.place.PlaceRequestSearchCondition;
 import com.spam.whidy.dto.user.GrantRoleRequest;
 import com.spam.whidy.dto.user.UserSearchCondition;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +40,7 @@ public class AdminController {
 
     @PostMapping("/user/grant")
     @Operation(summary = "사용자 권한 부여", description = "Super Admin 권한 필요")
-    public void grantPrivilegeToUser(@Auth LoginUser loginUser, @RequestBody GrantRoleRequest grantRoleRequest){
+    public void grantPrivilegeToUser(@Auth LoginUser loginUser, @RequestBody @Valid GrantRoleRequest grantRoleRequest){
         checkSuperAdmin(loginUser.getUserId());
         userService.grantRole(grantRoleRequest.userId(), grantRoleRequest.role());
     }
