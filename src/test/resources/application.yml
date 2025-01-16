@@ -21,6 +21,11 @@ application:
       ttl-minute: 10
     signup-info:
       ttl-minute: 2
+    super-admin:
+      name: a
+      oauth-id: a
+      oauth-type: KAKAO
+      email: a
   secret-key: as97das78d6awli121oi24hasdfas1872sadkjhg9928hsidjnbf367
   expiration-time:
     access-token: 3600000

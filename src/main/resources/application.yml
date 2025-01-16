@@ -25,6 +25,11 @@ application:
       ttl-minute: 10
     signup-info:
       ttl-minute: 2
+    super-admin:
+      name: ${INIT_USER_NAME}
+      oauth-id: ${INIT_USER_OAUTH_ID}
+      oauth-type: ${INIT_USER_OAUTH_TYPE}
+      email: ${INIT_USER_EMAIL}
   secret-key: ${SECRET_KEY}
   expiration-time:
     access-token: 3600000
