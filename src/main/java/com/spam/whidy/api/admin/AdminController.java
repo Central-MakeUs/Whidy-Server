@@ -67,14 +67,14 @@ public class AdminController {
 
     private void checkSuperAdmin(Long userId){
         Optional<User> user = userFinder.findById(userId);
-        if(user.isEmpty() || !user.get().isSuperAdmin()){
+        if(user.isEmpty() || !user.get().getRole().isSuperAdmin()){
             throw new BadRequestException(ExceptionType.BAD_REQUEST);
         }
     }
 
     private void checkAdmin(Long userId){
         Optional<User> user = userFinder.findById(userId);
-        if(user.isEmpty() || !user.get().isAdmin()){
+        if(user.isEmpty() || !user.get().getRole().isAdmin()){
             throw new BadRequestException(ExceptionType.BAD_REQUEST);
         }
     }
