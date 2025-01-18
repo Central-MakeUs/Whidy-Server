@@ -1,5 +1,6 @@
 package com.spam.whidy.domain.user;
 
+import com.querydsl.core.types.Predicate;
 import com.spam.whidy.dto.user.UserSearchCondition;
 import org.springframework.stereotype.Repository;
 
@@ -22,14 +23,18 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
     public List<User> searchByCondition(UserSearchCondition condition) {
         return queryFactory
                 .selectFrom(user)
-                .where(
-                        nameContains(condition.name()),
-                        emailContains(condition.email()),
-                        roleEq(condition.role()),
-                        joinDateAfter(condition.joinDateFrom()),
-                        joinDateBefore(condition.joinDateTo())
-                )
+                .where(allConditions(condition))
                 .fetch();
+    }
+
+    private BooleanExpression[] allConditions(UserSearchCondition condition) {
+        return new BooleanExpression[]{
+                nameContains(condition.name()),
+                emailContains(condition.email()),
+                roleEq(condition.role()),
+                joinDateAfter(condition.joinDateFrom()),
+                joinDateBefore(condition.joinDateTo())
+        };
     }
 
     private BooleanExpression nameContains(String name) {
