@@ -32,7 +32,7 @@ public class AdminController {
     private final PlaceDataCollectService placeDataCollectService;
 
     @GetMapping("/user/search")
-    @Operation(summary = "사용자 목록", description = "Super Admin 권한 필요")
+    @Operation(summary = "사용자 목록 조회", description = "Super Admin 권한 필요")
     public List<User> searchUsers(@Auth LoginUser loginUser, UserSearchCondition condition){
         checkSuperAdmin(loginUser.getUserId());
         return userFinder.findByCondition(condition);
@@ -46,7 +46,7 @@ public class AdminController {
     }
 
     @GetMapping("/place-request/search")
-    @Operation(summary = "요청된 장소 목록", description = "사용자가 장소 등록을 요청한 목록을 조회. (Admin 권한 필요)")
+    @Operation(summary = "요청된 장소 목록 조회", description = "사용자가 장소 등록을 요청한 목록을 조회. (Admin 권한 필요)")
     public List<PlaceRequest> searchPlaceRequest(@Auth LoginUser user, PlaceRequestSearchCondition condition){
         checkAdmin(user.getUserId());
         return placeRequestService.searchByCondition(condition);
