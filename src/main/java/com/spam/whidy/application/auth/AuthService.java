@@ -72,9 +72,12 @@ public class AuthService {
 
     private void checkUserValidity(String email, SignUpInfo signUpInfo) {
         Optional<User> sameOauthUser = userFinder.findByAuthTypeAndAuthId(signUpInfo.oauthType(), signUpInfo.oauthId());
-        Optional<User> saveEmailUser = userFinder.findByEmail(email);
-        if(sameOauthUser.isPresent() || saveEmailUser.isPresent()) {
+        if(sameOauthUser.isPresent()) {
             throw new BadRequestException(ExceptionType.DUPLICATED_USER);
+        }
+        Optional<User> saveEmailUser = userFinder.findByEmail(email);
+        if(saveEmailUser.isPresent()) {
+            throw new BadRequestException(ExceptionType.DUPLICATED_EMAIL_USER);
         }
     }
 
