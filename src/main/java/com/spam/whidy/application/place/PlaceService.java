@@ -3,7 +3,7 @@ package com.spam.whidy.application.place;
 import com.spam.whidy.common.exception.BadRequestException;
 import com.spam.whidy.common.exception.ExceptionType;
 import com.spam.whidy.domain.place.Place;
-import com.spam.whidy.domain.place.PlaceRepository;
+import com.spam.whidy.domain.place.repository.PlaceRepository;
 import com.spam.whidy.domain.place.PlaceType;
 import com.spam.whidy.dto.place.CafeDTO;
 import com.spam.whidy.dto.place.PlaceDTO;
@@ -20,6 +20,11 @@ import java.util.List;
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
+
+    public Place findById(Long id){
+        return placeRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(ExceptionType.PLACE_NOT_FOUND));
+    }
 
     public List<PlaceDTO> searchByCondition(PlaceSearchCondition condition) {
         return placeRepository.searchByCondition(condition);

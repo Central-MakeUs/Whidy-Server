@@ -26,10 +26,12 @@ public class Place {
     @Column(nullable = false)
     private String address;
     @Column(nullable = false)
-    private double latitude;
+    private Double latitude;
     @Column(nullable = false)
-    private double longitude;
+    private Double longitude;
     private Integer beveragePrice;
+    @Builder.Default
+    private int reviewNum = 0;
     private Float reviewScore;
     @Enumerated(EnumType.STRING)
     private PlaceType placeType;
@@ -42,4 +44,22 @@ public class Place {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "business_hour", joinColumns = @JoinColumn(name = "place_id"))
     private Set<BusinessHour> businessHours = new HashSet<>();
+
+
+    public void addReview(float score) {
+        float previousTotalScore = reviewNum * reviewScore;
+        float newTotalScore = previousTotalScore + score;
+        reviewScore = newTotalScore / ++reviewNum;
+    }
+
+    public void removeReview(float score){
+        float previousTotalScore = reviewNum * reviewScore;
+        float newTotalScore = previousTotalScore - score;
+        reviewScore = newTotalScore / --reviewNum;
+    }
+
+    public void updateReview(float previousScore, float newScore){
+        removeReview(previousScore);
+        addReview(newScore);
+    }
 }

@@ -2,7 +2,7 @@ package com.spam.whidy.application.place;
 
 import com.spam.whidy.domain.place.Place;
 import com.spam.whidy.domain.place.PlaceDataCollector;
-import com.spam.whidy.domain.place.PlaceRepository;
+import com.spam.whidy.domain.place.repository.PlaceRepository;
 import com.spam.whidy.domain.place.PlaceType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
