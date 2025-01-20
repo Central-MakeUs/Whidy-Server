@@ -14,6 +14,7 @@ import com.spam.whidy.dto.place.PlaceRequestSearchCondition;
 import com.spam.whidy.dto.user.GrantRoleRequest;
 import com.spam.whidy.dto.user.UserSearchCondition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "관리자 페이지")
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -68,14 +70,14 @@ public class AdminController {
     private void checkSuperAdmin(Long userId){
         Optional<User> user = userFinder.findById(userId);
         if(user.isEmpty() || !user.get().getRole().isSuperAdmin()){
-            throw new BadRequestException(ExceptionType.BAD_REQUEST);
+            throw new BadRequestException(ExceptionType.FORBIDDEN);
         }
     }
 
     private void checkAdmin(Long userId){
         Optional<User> user = userFinder.findById(userId);
         if(user.isEmpty() || !user.get().getRole().isAdmin()){
-            throw new BadRequestException(ExceptionType.BAD_REQUEST);
+            throw new BadRequestException(ExceptionType.FORBIDDEN);
         }
     }
 }

@@ -11,6 +11,7 @@ import com.spam.whidy.dto.auth.SignInResponse;
 import com.spam.whidy.application.auth.AuthService;
 import com.spam.whidy.domain.auth.oauth.OAuthType;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "로그인")
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
