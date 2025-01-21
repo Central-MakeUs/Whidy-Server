@@ -1,8 +1,10 @@
-package com.spam.whidy.domain.place;
+package com.spam.whidy.domain.place.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spam.whidy.domain.place.PlaceType;
 import com.spam.whidy.dto.place.PlaceDTO;
 import com.spam.whidy.dto.place.PlaceSearchCondition;
 import lombok.RequiredArgsConstructor;
@@ -25,32 +27,40 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
     @Override
     public List<PlaceDTO> searchByCondition(PlaceSearchCondition condition) {
         return queryFactory
-                .select(Projections.fields(
-                        PlaceDTO.class,
-                        place.id,
-                        place.name,
-                        place.address,
-                        place.latitude,
-                        place.longitude,
-                        place.beveragePrice,
-                        place.reviewScore,
-                        place.placeType
-                ))
+                .select(selectPlaceDTO())
                 .from(place)
                 .leftJoin(place.businessHours, businessHour)
-                .where(
-                        reviewScoreFrom(condition.getReviewScoreFrom()),
-                        reviewScoreTo(condition.getReviewScoreTo()),
-                        beverageFrom(condition.getBeverageFrom()),
-                        beverageTo(condition.getBeverageTo()),
-                        placeTypeIn(condition.getType()),
-                        businessDayOfWeekIn(condition.getBusinessDayOfWeek()),
-                        businessTimeFrom(condition.getBusinessTimeFrom()),
-                        businessTimeTo(condition.getBusinessTimeTo()),
-                        location(condition)
-                )
+                .where(allConditions(condition))
                 .distinct()
                 .fetch();
+    }
+
+    private QBean<PlaceDTO> selectPlaceDTO() {
+        return Projections.fields(
+                PlaceDTO.class,
+                place.id,
+                place.name,
+                place.address,
+                place.latitude,
+                place.longitude,
+                place.beveragePrice,
+                place.reviewScore,
+                place.placeType
+        );
+    }
+
+    private BooleanExpression[] allConditions(PlaceSearchCondition condition) {
+        return new BooleanExpression[]{
+                reviewScoreFrom(condition.reviewScoreFrom()),
+                reviewScoreTo(condition.reviewScoreTo()),
+                beverageFrom(condition.beverageFrom()),
+                beverageTo(condition.beverageTo()),
+                placeTypeIn(condition.placeType()),
+                businessDayOfWeekIn(condition.businessDayOfWeek()),
+                businessTimeFrom(condition.businessTimeFrom()),
+                businessTimeTo(condition.businessTimeTo()),
+                location(condition)
+        };
     }
 
     private BooleanExpression reviewScoreFrom(Integer reviewScoreFrom) {
@@ -86,10 +96,10 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
     }
 
     private BooleanExpression location(PlaceSearchCondition condition) {
-        double latitudeFrom = condition.getLatitudeFrom();
-        double latitudeTo = condition.getLatitudeTo();
-        double longitudeFrom = condition.getLongitudeFrom();
-        double longitudeTo = condition.getLongitudeTo();
+        double latitudeFrom = condition.latitudeFrom();
+        double latitudeTo = condition.latitudeTo();
+        double longitudeFrom = condition.longitudeFrom();
+        double longitudeTo = condition.longitudeTo();
         return place.latitude.between(latitudeFrom, latitudeTo)
                 .and(place.longitude.between(longitudeFrom, longitudeTo));
     }

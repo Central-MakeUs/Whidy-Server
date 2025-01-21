@@ -1,9 +1,8 @@
-package com.spam.whidy.domain.place;
+package com.spam.whidy.domain.place.repository;
 
-import com.spam.whidy.dto.place.PlaceDTO;
-import com.spam.whidy.dto.place.PlaceSearchCondition;
+import com.spam.whidy.domain.place.Place;
+import com.spam.whidy.domain.place.PlaceType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
