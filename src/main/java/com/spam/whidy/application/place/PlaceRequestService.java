@@ -28,4 +28,7 @@ public class PlaceRequestService {
         return placeRequestRepository.searchByCondition(condition);
     }
 
+    public List<PlaceRequest> findByUserAndCondition(Long userId, PlaceRequestSearchCondition condition) {
+        return placeRequestRepository.searchByUserAndCondition(userId, condition);
+    }
 }
