@@ -40,11 +40,11 @@ public class AdminController {
         return userFinder.findByCondition(condition);
     }
 
-    @PostMapping("/user/grant")
+    @PatchMapping("/user/role")
     @Operation(summary = "사용자 권한 부여", description = "Super Admin 권한 필요")
     public void grantPrivilegeToUser(@Auth LoginUser loginUser, @RequestBody @Valid GrantRoleRequest grantRoleRequest){
         checkSuperAdmin(loginUser.getUserId());
-        userService.grantRole(grantRoleRequest.userId(), grantRoleRequest.role());
+        userService.updateRole(grantRoleRequest.userId(), grantRoleRequest.role());
     }
 
     @GetMapping("/place-request/search")
