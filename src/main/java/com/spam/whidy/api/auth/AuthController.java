@@ -46,7 +46,7 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/callback/{oauthType}", method = {RequestMethod.GET, RequestMethod.POST})
-    @Operation(summary = "oauth 로그인")
+    @Operation(summary = "oauth callback")
     public void login(@PathVariable OAuthType oauthType, @RequestParam String code, HttpServletResponse response) throws Exception {
         try {
             SignInResponse tokens = authService.signIn(oauthType, code);
@@ -79,7 +79,7 @@ public class AuthController {
 
     @GetMapping("/{oauthType}")
     @Operation(summary = "oauth 페이지로 redirect",
-            description = "[로그인 성공 시] <b>whidy://home</b> 으로 redirect, accessToken 과 refresh accessToken 은 uri parameter 에 포함." +
+            description = "[로그인 성공 시] <b>whidy://home</b> 으로 redirect. <b>accessToken</b> 과 <b>refresh accessToken</b> 은 parameter 에 포함." +
                     " <br>[로그인 실패 시] <b>whidy://sign-up</b> 으로 redirect 되며, parameter 에 <b>signUpCode</b> 포함됨. " +
                     " <b>signUpCode</b> 는 회원가입 시 사용된다.")
     public void redirectToOauthCodeRequestPage(@PathVariable OAuthType oauthType, HttpServletResponse response) throws IOException {
