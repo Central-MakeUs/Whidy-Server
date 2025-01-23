@@ -3,6 +3,7 @@ package com.spam.whidy.api.place;
 import com.spam.whidy.application.place.PlaceService;
 import com.spam.whidy.domain.place.PlaceType;
 import com.spam.whidy.dto.place.CafeDTO;
+import com.spam.whidy.dto.place.FreeSpaceDTO;
 import com.spam.whidy.dto.place.PlaceDTO;
 import com.spam.whidy.dto.place.PlaceSearchCondition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,21 +22,39 @@ public class PlaceController {
     private final PlaceService placeService;
 
     @GetMapping("/general-cafe/{id}")
-    @Operation(summary = "일반 카페 조회")
+    @Operation(summary = "일반 카페 상세조회")
     public CafeDTO findCafeById(@PathVariable Long id){
         return placeService.findCafe(PlaceType.GENERAL_CAFE, id);
     }
 
     @GetMapping("/franchise-cafe/{id}")
-    @Operation(summary = "프랜차이즈 카페 조회")
+    @Operation(summary = "프랜차이즈 카페 상세조회")
     public CafeDTO findFranchiseCafeById(@PathVariable Long id){
         return placeService.findCafe(PlaceType.FRANCHISE_CAFE, id);
     }
 
     @GetMapping("/study-cafe/{id}")
-    @Operation(summary = "스터디 카페 조회")
+    @Operation(summary = "스터디 카페 상세조회")
     public CafeDTO findStudyCafeById(@PathVariable Long id){
         return placeService.findCafe(PlaceType.STUDY_CAFE, id);
+    }
+
+    @GetMapping("/free-study/{id}")
+    @Operation(summary = "무료 공부 공간 상세조회")
+    public FreeSpaceDTO findFreeStudyById(@PathVariable Long id){
+        return placeService.findFreeSpace(PlaceType.FREE_STUDY_SPACE, id);
+    }
+
+    @GetMapping("/free-clothes/{id}")
+    @Operation(summary = "무료 면접복장 대여소 상세조회")
+    public FreeSpaceDTO findFreeClothesById(@PathVariable Long id){
+        return placeService.findFreeSpace(PlaceType.FREE_CLOTHES_RENTAL, id);
+    }
+
+    @GetMapping("/free-picture/{id}")
+    @Operation(summary = "무료 면접사진 촬영소 상세조회")
+    public FreeSpaceDTO findFreePictureById(@PathVariable Long id){
+        return placeService.findFreeSpace(PlaceType.FREE_PICTURE, id);
     }
 
     @GetMapping
