@@ -5,6 +5,7 @@ import com.spam.whidy.common.exception.ExceptionType;
 import com.spam.whidy.common.config.jwt.TokenUtil;
 import com.spam.whidy.domain.auth.AuthToken;
 import com.spam.whidy.domain.auth.AuthTokenRepository;
+import com.spam.whidy.dto.auth.SignOutRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -35,11 +36,11 @@ public class AuthTokenService {
         return createAuthToken(userId);
     }
 
-    public void makeTokenInvalid(AuthToken token) {
-        Long userId = tokenUtil.getUserIdFromToken(token.getRefreshToken());
+    public void makeTokenInvalid(SignOutRequest request) {
+        Long userId = tokenUtil.getUserIdFromToken(request.refreshToken());
         authTokenRepository.deleteRefreshToken(userId);
-        Date accessTokenExpirationDate = tokenUtil.getExpireDateFromToken(token.getAccessToken());
-        authTokenRepository.addBlackList(token.getAccessToken(), accessTokenExpirationDate);
+        Date accessTokenExpirationDate = tokenUtil.getExpireDateFromToken(request.accessToken());
+        authTokenRepository.addBlackList(request.accessToken(), accessTokenExpirationDate);
     }
 
     public boolean isTokenValid(String token) {

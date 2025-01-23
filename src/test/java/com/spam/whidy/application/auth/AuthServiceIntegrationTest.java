@@ -1,6 +1,7 @@
 package com.spam.whidy.application.auth;
 
-import com.spam.whidy.application.UserService;
+import com.spam.whidy.application.user.UserFinder;
+import com.spam.whidy.application.user.UserService;
 import com.spam.whidy.application.auth.exception.SignInFailException;
 import com.spam.whidy.domain.auth.SignUpInfo;
 import com.spam.whidy.domain.auth.SignUpInfoRepository;
@@ -11,14 +12,12 @@ import com.spam.whidy.domain.user.User;
 import com.spam.whidy.dto.auth.SignInResponse;
 import com.spam.whidy.common.exception.BadRequestException;
 import com.spam.whidy.common.exception.ExceptionType;
-import com.spam.whidy.testConfig.EmbeddedRedisConfig;
 import com.spam.whidy.testConfig.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -28,20 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AuthServiceIntegrationTest extends IntegrationTest{
 
-    @Autowired
-    private AuthService authService;
+    @Autowired private AuthService authService;
+    @Autowired private SignUpInfoRepository signUpInfoRepository;
+    @Autowired private UserService userService;
+    @Autowired private UserFinder userFinder;
 
-    @Autowired
-    private SignUpInfoRepository signUpInfoRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @MockBean
-    private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
-
-    @MockBean
-    private OauthUserClientComposite oauthUserClientComposite;
+    @MockBean private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
+    @MockBean private OauthUserClientComposite oauthUserClientComposite;
 
     @Test
     @DisplayName("OAuth 로그인 - 기존 유저 로그인 성공")
@@ -111,7 +103,7 @@ class AuthServiceIntegrationTest extends IntegrationTest{
         assertThat(response.userId()).isNotNull();
 
         // DB에 유저가 저장됐는지 확인
-        Optional<User> savedUser = userService.findByEmail("signup@example.com");
+        Optional<User> savedUser = userFinder.findByEmail("signup@example.com");
         assertThat(savedUser).isPresent();
         assertThat(savedUser.get().getOauthId()).isEqualTo(oauthId);
     }

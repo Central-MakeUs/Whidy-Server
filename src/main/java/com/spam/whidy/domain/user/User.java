@@ -1,6 +1,5 @@
 package com.spam.whidy.domain.user;
 
-import com.spam.whidy.domain.TimeBaseEntity;
 import com.spam.whidy.domain.auth.oauth.OAuthType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,17 +27,13 @@ public class User {
     private OAuthType oauthType;
     @Column(nullable = false)
     private String oauthId;
+    @Builder.Default
     @Column(nullable = false)
-    private LocalDateTime joinDateTime;
-
-    @PrePersist
-    protected void onCreate() {
-        this.joinDateTime = LocalDateTime.now();
-    }
-
-    public void update(String name){
-        this.name = name;
-    }
+    private LocalDateTime joinDateTime = LocalDateTime.now();
+    @Builder.Default
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     public static User of(String email, String name, OAuthType oauthType, String oauthId){
         User user = new User();
@@ -55,6 +50,10 @@ public class User {
         user.oauthType = oauthType;
         user.oauthId = oauthId;
         return user;
+    }
+
+    public void updateRole(Role role){
+        this.role = role;
     }
 
 }

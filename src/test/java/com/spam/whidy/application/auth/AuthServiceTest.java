@@ -1,6 +1,7 @@
 package com.spam.whidy.application.auth;
 
-import com.spam.whidy.application.UserService;
+import com.spam.whidy.application.user.UserFinder;
+import com.spam.whidy.application.user.UserService;
 import com.spam.whidy.application.auth.exception.SignInFailException;
 import com.spam.whidy.application.auth.token.AuthTokenService;
 import com.spam.whidy.common.exception.BadRequestException;
@@ -29,18 +30,14 @@ import static org.mockito.Mockito.*;
 
 class AuthServiceTest {
 
-    @InjectMocks
-    private AuthService authService;
-    @Mock
-    private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
-    @Mock
-    private OauthUserClientComposite oauthUserClientComposite;
-    @Mock
-    private AuthTokenService authTokenService;
-    @Mock
-    private UserService userService;
-    @Mock
-    private SignUpInfoRepository signUpInfoRepository;
+    @InjectMocks private AuthService authService;
+
+    @Mock private AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
+    @Mock private OauthUserClientComposite oauthUserClientComposite;
+    @Mock private AuthTokenService authTokenService;
+    @Mock private UserFinder userFinder;
+    @Mock private UserService userService;
+    @Mock private SignUpInfoRepository signUpInfoRepository;
 
     @BeforeEach
     void setUp() {
@@ -75,10 +72,10 @@ class AuthServiceTest {
         String oauthId = "oauth-user-id";
 
         User oauthUser = User.of("test@example.com", "Test User", oauthType, oauthId);
-        AuthToken authToken = new AuthToken("access-token", "refresh-token");
+        AuthToken authToken = new AuthToken("access-accessToken", "refresh-accessToken");
 
         when(oauthUserClientComposite.findOauthUser(oauthType, code)).thenReturn(oauthUser);
-        when(userService.findByAuthTypeAndAuthId(oauthType, oauthId)).thenReturn(Optional.of(oauthUser));
+        when(userFinder.findByAuthTypeAndAuthId(oauthType, oauthId)).thenReturn(Optional.of(oauthUser));
         when(authTokenService.createAuthToken(oauthUser.getId())).thenReturn(authToken);
 
         // When
@@ -100,7 +97,7 @@ class AuthServiceTest {
         User oauthUser = User.of("new@example.com", "New User", oauthType, oauthId);
 
         when(oauthUserClientComposite.findOauthUser(oauthType, code)).thenReturn(oauthUser);
-        when(userService.findByAuthTypeAndAuthId(oauthType, oauthId)).thenReturn(Optional.empty());
+        when(userFinder.findByAuthTypeAndAuthId(oauthType, oauthId)).thenReturn(Optional.empty());
 
         // When & Then
         SignInFailException exception = assertThrows(SignInFailException.class, () -> {
@@ -123,7 +120,7 @@ class AuthServiceTest {
 
         SignUpInfo signUpInfo = new SignUpInfo(oauthType, oauthId);
         User newUser = User.of(email, name, oauthType, oauthId);
-        AuthToken authToken = new AuthToken("access-token", "refresh-token");
+        AuthToken authToken = new AuthToken("access-accessToken", "refresh-accessToken");
 
         when(signUpInfoRepository.findByCode(signUpCode)).thenReturn(Optional.of(signUpInfo));
         when(authTokenService.createAuthToken(newUser.getId())).thenReturn(authToken);
@@ -148,7 +145,7 @@ class AuthServiceTest {
         SignUpInfo signUpInfo = new SignUpInfo(oauthType, oauthId);
 
         when(signUpInfoRepository.findByCode(signUpCode)).thenReturn(Optional.of(signUpInfo));
-        when(userService.findByEmail(email)).thenReturn(Optional.of(mock(User.class)));
+        when(userFinder.findByEmail(email)).thenReturn(Optional.of(mock(User.class)));
 
         // When & Then
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {

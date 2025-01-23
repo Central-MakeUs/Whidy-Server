@@ -18,12 +18,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(SignInFailException.class)
-    public ResponseEntity<SignInFailResponse> signInFailException(SignInFailException e) {
-        SignInFailResponse response = new SignInFailResponse(e.getMessage(), e.getSignUpCode());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> noResourceFoundException(NoResourceFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

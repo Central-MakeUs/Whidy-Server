@@ -1,11 +1,12 @@
 package com.spam.whidy.application.auth;
 
+import com.spam.whidy.application.user.UserFinder;
 import com.spam.whidy.domain.auth.SignUpInfoRepository;
 import com.spam.whidy.application.auth.exception.SignInFailException;
 import com.spam.whidy.domain.auth.SignUpInfo;
 import com.spam.whidy.domain.auth.StateRepository;
 import com.spam.whidy.dto.auth.SignInResponse;
-import com.spam.whidy.application.UserService;
+import com.spam.whidy.application.user.UserService;
 import com.spam.whidy.application.auth.token.AuthTokenService;
 import com.spam.whidy.common.exception.BadRequestException;
 import com.spam.whidy.common.exception.ExceptionType;
@@ -26,10 +27,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
-    private final OauthUserClientComposite oauthUserClientComposite;
-    private final AuthTokenService authTokenService;
     private final UserService userService;
+    private final UserFinder userFinder;
+    private final AuthTokenService authTokenService;
+    private final OauthUserClientComposite oauthUserClientComposite;
+    private final AuthCodeRequestUrlProviderComposite authCodeRequestUrlProviderComposite;
     private final SignUpInfoRepository signUpInfoRepository;
     private final StateRepository stateRepository;
 
@@ -40,7 +42,7 @@ public class AuthService {
 
     public SignInResponse signIn(OAuthType oauthType, String code) {
         User oauthUser = oauthUserClientComposite.findOauthUser(oauthType, code);
-        Optional<User> savedUser =  userService.findByAuthTypeAndAuthId(oauthType, oauthUser.getOauthId());
+        Optional<User> savedUser =  userFinder.findByAuthTypeAndAuthId(oauthType, oauthUser.getOauthId());
 
         if(savedUser.isEmpty()) {
             String signUpCode = UUID.randomUUID().toString();
@@ -69,10 +71,13 @@ public class AuthService {
     }
 
     private void checkUserValidity(String email, SignUpInfo signUpInfo) {
-        Optional<User> sameOauthUser = userService.findByAuthTypeAndAuthId(signUpInfo.oauthType(), signUpInfo.oauthId());
-        Optional<User> saveEmailUser = userService.findByEmail(email);
-        if(sameOauthUser.isPresent() || saveEmailUser.isPresent()) {
+        Optional<User> sameOauthUser = userFinder.findByAuthTypeAndAuthId(signUpInfo.oauthType(), signUpInfo.oauthId());
+        if(sameOauthUser.isPresent()) {
             throw new BadRequestException(ExceptionType.DUPLICATED_USER);
+        }
+        Optional<User> saveEmailUser = userFinder.findByEmail(email);
+        if(saveEmailUser.isPresent()) {
+            throw new BadRequestException(ExceptionType.DUPLICATED_EMAIL_USER);
         }
     }
 
