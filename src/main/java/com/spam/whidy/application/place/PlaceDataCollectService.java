@@ -4,6 +4,8 @@ import com.spam.whidy.domain.place.Place;
 import com.spam.whidy.domain.place.PlaceDataCollector;
 import com.spam.whidy.domain.place.repository.PlaceRepository;
 import com.spam.whidy.domain.place.PlaceType;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-@Transactional
 public class PlaceDataCollectService {
 
     private final PlaceRepository placeRepository;
@@ -26,7 +28,13 @@ public class PlaceDataCollectService {
     public void collectAll(){
         for(PlaceDataCollector collector : placeDataCollector.values()){
             List<Place> places = collector.collect();
-            placeRepository.saveAll(places);
+            for(Place place : places){
+                try {
+                    placeRepository.save(place);
+                }catch (DataIntegrityViolationException e){
+                    log.error("수집된 장소 데이터 저장 중 에러 발생 : {}", e.getMessage());
+                }
+            }
         }
     }
 
