@@ -1,6 +1,5 @@
 package com.spam.whidy.domain.place.repository;
 
-import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -60,8 +59,8 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 beverageTo(condition.beverageTo()),
                 placeTypeIn(condition.placeType()),
                 businessDayOfWeekIn(condition.businessDayOfWeek()),
-                businessTimeFrom(condition.businessTimeFrom()),
-                businessTimeTo(condition.businessTimeTo()),
+                businessTimeFrom(condition.visitTimeFrom()),
+                businessTimeTo(condition.visitTimeTo()),
                 location(condition)
         };
     }

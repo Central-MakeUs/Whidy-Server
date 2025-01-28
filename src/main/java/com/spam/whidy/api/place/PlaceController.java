@@ -8,6 +8,7 @@ import com.spam.whidy.dto.place.PlaceDTO;
 import com.spam.whidy.dto.place.PlaceSearchCondition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,12 +60,12 @@ public class PlaceController {
 
     @GetMapping
     @Operation(summary = "장소 조회", description = """
-            <b>* 위경도 값 필수</b> <br> <b>latitudeFrom</b> : 남서쪽 위도<br> <b>longitudeFrom</b> : 남서쪽 경도<br> <b>latitudeTo</b> : 북동쪽 위도<br> <b>longitudeTo</b> : 북동쪽 경도<br><br>
-            <b>businessTime</b> : </b> ex) 13:00 <br>
+            <b>* 위경도, 반경 필수</b> <br> <b>centerLatitude</b> : 중심 위도<br> <b>centerLongitude</b> : 중심 경도<br> <b>radius</b> : 반경(미터)<br>
+            <b>visitTime</b> : </b> ex) 13:00 <br>
             <b>placeType (List)</b> : STUDY_CAFE, GENERAL_CAFE, FRANCHISE_CAFE, FREE_PICTURE, FREE_STUDY_SPACE, INTERVIEW_CLOTHES_RENTAL <br>
             <b>businessDayOfWeek (List)</b> : MONDAY, TUESDAY, WEDNESDAY, ...
             """)
-    public List<PlaceDTO> searchByCondition(PlaceSearchCondition condition){
+    public List<PlaceDTO> searchByCondition(@Valid PlaceSearchCondition condition){
         return placeService.searchByCondition(condition);
     }
 
