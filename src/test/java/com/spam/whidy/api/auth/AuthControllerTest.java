@@ -3,9 +3,7 @@ package com.spam.whidy.api.auth;
 import com.spam.whidy.domain.user.UserRepository;
 import com.spam.whidy.dto.auth.SignOutRequest;
 import com.spam.whidy.testConfig.ControllerTest;
-import com.spam.whidy.application.auth.AuthService;
 import com.spam.whidy.application.auth.exception.SignInFailException;
-import com.spam.whidy.application.auth.token.AuthTokenService;
 import com.spam.whidy.domain.auth.AuthToken;
 import com.spam.whidy.domain.auth.oauth.OAuthType;
 import com.spam.whidy.dto.auth.SignInResponse;
@@ -26,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest extends ControllerTest {
 
-    @MockBean private AuthService authService;
-    @MockBean private AuthTokenService authTokenService;
     @MockBean private UserRepository userRepository;
 
     @Value("${oauth.url.success}")
@@ -36,13 +32,13 @@ class AuthControllerTest extends ControllerTest {
     private String failUrl;
 
     @Test
-    @DisplayName("OAuth 로그인 성공 테스트")
+    @DisplayName("OAuth 로그인 성공")
     void testLoginSuccess() throws Exception {
         OAuthType oauthType = OAuthType.GOOGLE;
         String code = "test-code";
         Long userId = 1L;
 
-        AuthToken mockToken = new AuthToken("access-accessToken", "refresh-accessToken");
+        AuthToken mockToken = new AuthToken("access-token", "refresh-token");
         SignInResponse signInResponse = new SignInResponse(mockToken, userId);
 
         Mockito.when(authService.signIn(oauthType, code)).thenReturn(signInResponse);
@@ -50,13 +46,13 @@ class AuthControllerTest extends ControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/auth/callback/{oauthType}", oauthType)
                         .param("code", code))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(successUrl + "?accessToken=access-accessToken&refreshToken=refresh-accessToken"));
+                .andExpect(redirectedUrl(successUrl + "?accessToken=access-token&refreshToken=refresh-token"));
 
         Mockito.verify(authService).signIn(oauthType, code);
     }
 
     @Test
-    @DisplayName("OAuth 로그인 실패 테스트")
+    @DisplayName("OAuth 로그인 실패")
     void testLoginFail() throws Exception {
         OAuthType oauthType = OAuthType.GOOGLE;
         String code = "test-code";
@@ -76,7 +72,7 @@ class AuthControllerTest extends ControllerTest {
     @DisplayName("OAuth 회원가입 테스트")
     void testSignUp() throws Exception {
         SignUpRequest request = new SignUpRequest("signUpCode", "test@example.com", "test-user");
-        AuthToken mockToken = new AuthToken("access-accessToken", "refresh-accessToken");
+        AuthToken mockToken = new AuthToken("access-token", "refresh-token");
         Long userId = 1L;
         SignInResponse signInResponse = new SignInResponse(mockToken, userId);
 
@@ -86,8 +82,8 @@ class AuthControllerTest extends ControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"signUpCode\": \"signUpCode\",\"email\":\"test@example.com\",\"name\":\"test-user\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.authToken.accessToken").value("access-accessToken"))
-                .andExpect(jsonPath("$.authToken.refreshToken").value("refresh-accessToken"));
+                .andExpect(jsonPath("$.authToken.accessToken").value("access-token"))
+                .andExpect(jsonPath("$.authToken.refreshToken").value("refresh-token"));
 
         Mockito.verify(authService).signUp(request.signUpCode(), request.email(), request.name());
     }
@@ -95,11 +91,11 @@ class AuthControllerTest extends ControllerTest {
     @Test
     @DisplayName("로그아웃 테스트")
     void testSignOut() throws Exception {
-        SignOutRequest request = new SignOutRequest("access-accessToken", "refresh-accessToken");
+        SignOutRequest request = new SignOutRequest("access-token", "refresh-token");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/sign-out")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"accessToken\":\"access-accessToken\",\"refreshToken\":\"refresh-accessToken\"}"))
+                        .content("{\"accessToken\":\"access-token\",\"refreshToken\":\"refresh-token\"}"))
                 .andExpect(status().isOk());
 
         Mockito.verify(authTokenService).makeTokenInvalid(request);
@@ -108,14 +104,14 @@ class AuthControllerTest extends ControllerTest {
     @Test
     @DisplayName("토큰 갱신 테스트")
     void testRefreshToken() throws Exception {
-        AuthToken mockToken = new AuthToken("new-access-accessToken", "new-refresh-accessToken");
+        AuthToken mockToken = new AuthToken("new-access-token", "new-refresh-token");
 
         Mockito.when(authTokenService.refreshToken(Mockito.any(HttpServletRequest.class))).thenReturn(mockToken);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/refresh-token"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accessToken").value("new-access-accessToken"))
-                .andExpect(jsonPath("$.refreshToken").value("new-refresh-accessToken"));
+                .andExpect(jsonPath("$.accessToken").value("new-access-token"))
+                .andExpect(jsonPath("$.refreshToken").value("new-refresh-token"));
 
         Mockito.verify(authTokenService).refreshToken(Mockito.any(HttpServletRequest.class));
     }
