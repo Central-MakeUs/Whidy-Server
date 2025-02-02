@@ -72,7 +72,7 @@ class AuthServiceTest {
         String oauthId = "oauth-user-id";
 
         User oauthUser = User.of("test@example.com", "Test User", oauthType, oauthId);
-        AuthToken authToken = new AuthToken("access-accessToken", "refresh-accessToken");
+        AuthToken authToken = new AuthToken("access-token", "refresh-accessToken");
 
         when(oauthUserClientComposite.findOauthUser(oauthType, code)).thenReturn(oauthUser);
         when(userFinder.findByAuthTypeAndAuthId(oauthType, oauthId)).thenReturn(Optional.of(oauthUser));
@@ -120,7 +120,7 @@ class AuthServiceTest {
 
         SignUpInfo signUpInfo = new SignUpInfo(oauthType, oauthId);
         User newUser = User.of(email, name, oauthType, oauthId);
-        AuthToken authToken = new AuthToken("access-accessToken", "refresh-accessToken");
+        AuthToken authToken = new AuthToken("access-token", "refresh-accessToken");
 
         when(signUpInfoRepository.findByCode(signUpCode)).thenReturn(Optional.of(signUpInfo));
         when(authTokenService.createAuthToken(newUser.getId())).thenReturn(authToken);
