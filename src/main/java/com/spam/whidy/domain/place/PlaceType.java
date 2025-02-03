@@ -10,9 +10,9 @@ public enum PlaceType {
     STUDY_CAFE(CafeAdditionalInfo.class),
     GENERAL_CAFE(CafeAdditionalInfo.class),
     FRANCHISE_CAFE(CafeAdditionalInfo.class),
-    FREE_PICTURE(FreePictureAdditionalInfo.class),
-    FREE_STUDY_SPACE(FreeStudyPlaceAdditionalInfo.class),
-    INTERVIEW_CLOTHES_RENTAL(InterviewClothesAdditionalInfo.class);
+    FREE_PICTURE(FreeSpaceAdditionalInfo.class),
+    FREE_STUDY_SPACE(FreeSpaceAdditionalInfo.class),
+    FREE_CLOTHES_RENTAL(FreeSpaceAdditionalInfo.class);
 
     private final Class<? extends PlaceAdditionalInfo> additionalInfoClass;
 

@@ -1,8 +1,7 @@
 package com.spam.whidy.api.admin;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spam.whidy.application.auth.token.AuthTokenService;
 import com.spam.whidy.application.place.PlaceDataCollectService;
 import com.spam.whidy.application.place.PlaceRequestService;
+import com.spam.whidy.application.place.PlaceService;
 import com.spam.whidy.application.user.UserFinder;
 import com.spam.whidy.application.user.UserService;
 import com.spam.whidy.domain.user.Role;
@@ -14,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,11 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class AdminControllerTest extends ControllerTest {
 
-    @Autowired private ObjectMapper objectMapper;
-
     @MockBean private UserFinder userFinder;
     @MockBean private UserService userService;
-    @MockBean private AuthTokenService authTokenService;
+    @MockBean private PlaceService placeService;
     @MockBean private PlaceRequestService placeRequestService;
     @MockBean private PlaceDataCollectService placeDataCollectService;
 
@@ -85,7 +81,7 @@ class AdminControllerTest extends ControllerTest {
 
         mockMvc.perform(get("/api/admin/user/search")
                         .param("name", "홍길동"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -95,18 +91,18 @@ class AdminControllerTest extends ControllerTest {
 
         mockMvc.perform(get("/api/admin/user/search")
                         .param("name", "홍길동"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @DisplayName("사용자 권한 부여 성공")
-    void grantPrivilegeToUser_Success() throws Exception {
+    void updateRole_success() throws Exception {
         given(tokenUtil.getUserIdFromRequest(any(HttpServletRequest.class))).willReturn(SUPER_ADMIN_USER_ID);
-        doNothing().when(userService).grantRole(any(Long.class), any(Role.class));
+        doNothing().when(userService).updateRole(any(Long.class), any(Role.class));
 
         GrantRoleRequest request = new GrantRoleRequest(ADMIN_USER_ID, Role.ADMIN);
 
-        mockMvc.perform(post("/api/admin/user/grant")
+        mockMvc.perform(patch("/api/admin/user/role")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());

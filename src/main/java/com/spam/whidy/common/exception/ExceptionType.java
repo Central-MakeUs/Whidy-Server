@@ -24,7 +24,9 @@ public enum ExceptionType {
     REVIEW_NOT_FOUND("존재하지 않는 리뷰입니다.", 404),
     REVIEW_CONFLICT("해당 장소에 대한 리뷰를 이미 작성하였습니다.", 409),
     SCRAP_NOT_FOUND("스크랩을 찾을 수 없습니다.", 404),
-    SCRAP_CONFLICT("해당 장소에 대한 스크랩이 이미 존재합니다.", 409);
+    SCRAP_CONFLICT("해당 장소에 대한 스크랩이 이미 존재합니다.", 409),
+    DAY_OF_WEEK_NOT_VALID("요일 입력이 올바르지 않습니다.", 400),
+    PLACE_TYPE_NOT_VALID("장소타입 입력이 올바르지 않습니다.", 400);
 
     private final String message;
     private final int code;

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-
+import org.locationtech.jts.geom.Point;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +17,12 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+            @UniqueConstraint(
+                    name = "unique_place_constraint",
+                    columnNames = {"name", "address", "placeType"}
+            )}
+)
 public class Place {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +31,8 @@ public class Place {
     private String name;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
-    private Double latitude;
-    @Column(nullable = false)
-    private Double longitude;
+    @Column(nullable = false, columnDefinition = "geometry")
+    private Point coordinates;
     private Integer beveragePrice;
     @Builder.Default
     private int reviewNum = 0;
@@ -36,26 +40,43 @@ public class Place {
     @Enumerated(EnumType.STRING)
     private PlaceType placeType;
 
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    private PlaceAdditionalInfo additionalInfo;
-
     @Builder.Default
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "business_hour", joinColumns = @JoinColumn(name = "place_id"))
     private Set<BusinessHour> businessHours = new HashSet<>();
 
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private PlaceAdditionalInfo additionalInfo;
+
+
+    public Double getLatitude(){
+        return coordinates.getX();
+    }
+
+    public Double getLongitude(){
+        return coordinates.getY();
+    }
 
     public void addReview(float score) {
-        float previousTotalScore = reviewNum * reviewScore;
-        float newTotalScore = previousTotalScore + score;
-        reviewScore = newTotalScore / ++reviewNum;
+        if(reviewScore == null){
+            reviewScore = score;
+            reviewNum = 1;
+        }else{
+            float previousTotalScore = reviewNum * reviewScore;
+            float newTotalScore = previousTotalScore + score;
+            reviewScore = newTotalScore / ++reviewNum;
+        }
     }
 
     public void removeReview(float score){
         float previousTotalScore = reviewNum * reviewScore;
         float newTotalScore = previousTotalScore - score;
-        reviewScore = newTotalScore / --reviewNum;
+        if(--reviewNum == 0){
+            reviewScore = null;
+        }else{
+            reviewScore = newTotalScore / reviewNum;
+        }
     }
 
     public void updateReview(float previousScore, float newScore){

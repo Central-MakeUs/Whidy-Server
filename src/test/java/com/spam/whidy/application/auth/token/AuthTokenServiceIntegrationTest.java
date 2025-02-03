@@ -28,8 +28,8 @@ class AuthTokenServiceIntegrationTest extends IntegrationTest {
     @MockBean private AuthTokenRepository authTokenRepository;
 
     private final Long userId = 1L;
-    private final String accessToken = "mock-access-accessToken";
-    private final String refreshToken = "mock-refresh-accessToken";
+    private final String accessToken = "mock-access-token";
+    private final String refreshToken = "mock-refresh-token";
 
     @BeforeEach
     void setUp() {

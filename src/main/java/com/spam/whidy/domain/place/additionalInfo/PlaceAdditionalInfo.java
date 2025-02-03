@@ -9,9 +9,7 @@ import com.spam.whidy.domain.place.additionalInfo.cafe.CafeAdditionalInfo;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CafeAdditionalInfo.class),
-        @JsonSubTypes.Type(value = FreePictureAdditionalInfo.class),
-        @JsonSubTypes.Type(value = FreeStudyPlaceAdditionalInfo.class),
-        @JsonSubTypes.Type(value = InterviewClothesAdditionalInfo.class)
+        @JsonSubTypes.Type(value = FreeSpaceAdditionalInfo.class),
 })
 public interface PlaceAdditionalInfo {
 }

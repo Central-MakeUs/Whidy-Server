@@ -3,6 +3,7 @@ package com.spam.whidy.domain.place.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spam.whidy.domain.place.PlaceType;
 import com.spam.whidy.dto.place.PlaceDTO;
@@ -15,6 +16,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
+import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 import static com.spam.whidy.domain.place.QPlace.place;
 import static com.spam.whidy.domain.place.QBusinessHour.businessHour;
 
@@ -41,8 +43,8 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 place.id,
                 place.name,
                 place.address,
-                place.latitude,
-                place.longitude,
+                numberTemplate(Double.class, "ST_X({0})", place.coordinates).as("latitude"),
+                numberTemplate(Double.class, "ST_Y({0})", place.coordinates).as("longitude"),
                 place.beveragePrice,
                 place.reviewScore,
                 place.placeType
@@ -57,8 +59,8 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 beverageTo(condition.beverageTo()),
                 placeTypeIn(condition.placeType()),
                 businessDayOfWeekIn(condition.businessDayOfWeek()),
-                businessTimeFrom(condition.businessTimeFrom()),
-                businessTimeTo(condition.businessTimeTo()),
+                businessTimeFrom(condition.visitTimeFrom()),
+                businessTimeTo(condition.visitTimeTo()),
                 location(condition)
         };
     }
@@ -95,14 +97,31 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
         return toTime != null ? businessHour.closeTime.goe(toTime) : null;
     }
 
+    // 반경 검색
     private BooleanExpression location(PlaceSearchCondition condition) {
-        double latitudeFrom = condition.latitudeFrom();
-        double latitudeTo = condition.latitudeTo();
-        double longitudeFrom = condition.longitudeFrom();
-        double longitudeTo = condition.longitudeTo();
-        return place.latitude.between(latitudeFrom, latitudeTo)
-                .and(place.longitude.between(longitudeFrom, longitudeTo));
+        if(condition.centerLatitude() == null
+                || condition.centerLongitude() == null
+                || condition.radius() == null){
+            return null;
+        }
+        NumberExpression<Double> distance = numberTemplate(
+                Double.class,
+                "ST_Distance_Sphere({0}, ST_GeomFromText({1}, 4326))",
+                place.coordinates,
+                "POINT(" + condition.centerLatitude()+ " " + condition.centerLongitude() + ")"
+        );
+        return distance.loe(condition.radius());
     }
+
+    // 격자 검색
+//    private BooleanExpression location(PlaceSearchCondition condition) {
+//        double latitudeFrom = condition.latitudeFrom();
+//        double latitudeTo = condition.latitudeTo();
+//        double longitudeFrom = condition.longitudeFrom();
+//        double longitudeTo = condition.longitudeTo();
+//        return place.latitude.between(latitudeFrom, latitudeTo)
+//                .and(place.longitude.between(longitudeFrom, longitudeTo));
+//    }
 
 
 }

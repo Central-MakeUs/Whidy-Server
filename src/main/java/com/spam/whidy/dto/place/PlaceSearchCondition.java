@@ -1,6 +1,7 @@
 package com.spam.whidy.dto.place;
 
 import com.spam.whidy.domain.place.PlaceType;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 import java.time.DayOfWeek;
@@ -15,11 +16,10 @@ public record PlaceSearchCondition (
         Integer beverageTo,
         Set<PlaceType> placeType,
         Set<DayOfWeek> businessDayOfWeek,
-        LocalTime businessTimeFrom,
-        LocalTime businessTimeTo,
-        double latitudeFrom,
-        double longitudeFrom,
-        double latitudeTo,
-        double longitudeTo
+        LocalTime visitTimeFrom,
+        LocalTime visitTimeTo,
+        @NotNull Double centerLatitude,
+        @NotNull Double centerLongitude,
+        @NotNull Double radius
 ){
 }
