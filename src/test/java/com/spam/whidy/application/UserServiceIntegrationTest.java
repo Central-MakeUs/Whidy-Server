@@ -28,13 +28,10 @@ class UserServiceIntegrationTest {
     @Test
     @DisplayName("유저 저장 테스트")
     void saveUserTest() {
-        // Given
         User user = User.of("test@example.com", "Test User", OAuthType.GOOGLE, "oauth-id-123");
 
-        // When
         userService.save(user);
 
-        // Then
         Optional<User> savedUser = userRepository.findByEmail("test@example.com");
         assertThat(savedUser).isPresent();
         assertThat(savedUser.get().getName()).isEqualTo("Test User");
@@ -44,14 +41,11 @@ class UserServiceIntegrationTest {
     @Test
     @DisplayName("OAuth 타입과 ID로 유저 조회 테스트")
     void findByAuthTypeAndAuthIdTest() {
-        // Given
         User user = User.of("auth@example.com", "OAuth User", OAuthType.KAKAO, "oauth-id-456");
         userService.save(user);
 
-        // When
         Optional<User> foundUser = userFinder.findByAuthTypeAndAuthId(OAuthType.KAKAO, "oauth-id-456");
 
-        // Then
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get().getEmail()).isEqualTo("auth@example.com");
     }
@@ -59,14 +53,11 @@ class UserServiceIntegrationTest {
     @Test
     @DisplayName("이메일로 유저 조회 테스트")
     void findByEmailTest() {
-        // Given
         User user = User.of("email@example.com", "Email User", OAuthType.NAVER, "oauth-id-789");
         userService.save(user);
 
-        // When
         Optional<User> foundUser = userFinder.findByEmail("email@example.com");
 
-        // Then
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get().getName()).isEqualTo("Email User");
         assertThat(foundUser.get().getOauthType()).isEqualTo(OAuthType.NAVER);
