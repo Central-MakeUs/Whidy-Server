@@ -63,7 +63,8 @@ public class PlaceController {
             <b>* 위경도, 반경 필수</b> <br> <b>centerLatitude</b> : 중심 위도<br> <b>centerLongitude</b> : 중심 경도<br> <b>radius</b> : 반경(미터)<br>
             <b>visitTime</b> : </b> ex) 13:00 <br>
             <b>placeType (List)</b> : STUDY_CAFE, GENERAL_CAFE, FRANCHISE_CAFE, FREE_PICTURE, FREE_STUDY_SPACE, INTERVIEW_CLOTHES_RENTAL <br>
-            <b>businessDayOfWeek (List)</b> : MONDAY, TUESDAY, WEDNESDAY, ...
+            <b>businessDayOfWeek (List)</b> : MONDAY, TUESDAY, WEDNESDAY, ... <br>
+            <b>keyword</b> : 장소명, 주소
             """)
     public List<PlaceDTO> searchByCondition(@Valid PlaceSearchCondition condition){
         return placeService.searchByCondition(condition);
