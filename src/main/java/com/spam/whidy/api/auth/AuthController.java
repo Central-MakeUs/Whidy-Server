@@ -47,7 +47,7 @@ public class AuthController {
 
     @RequestMapping(value = "/callback/{oauthType}", method = {RequestMethod.GET, RequestMethod.POST})
     @Operation(summary = "oauth callback")
-    public void login(@PathVariable OAuthType oauthType, @RequestParam String code, HttpServletResponse response) throws Exception {
+    public void login(@PathVariable OAuthType oauthType, @RequestParam @NotNull String code, HttpServletResponse response) throws Exception {
         try {
             SignInResponse tokens = authService.signIn(oauthType, code);
             String param = String.format("?accessToken=%s&refreshToken=%s", tokens.authToken().getAccessToken(), tokens.authToken().getRefreshToken());
