@@ -22,6 +22,9 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String name;
+    @Embedded
+    @Builder.Default
+    private ProfileImage profileImage = new ProfileImage();
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OAuthType oauthType;
@@ -54,6 +57,45 @@ public class User {
 
     public void updateRole(Role role){
         this.role = role;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateProfileKey(String profileKey) {
+        getProfileImage().profileImageKey = profileKey;
+        getProfileImage().profileImageUrl = null;
+        getProfileImage().urlExpireDateTime = null;
+    }
+
+    public void updateProfileImageUrl(String url, LocalDateTime expirationDateTime){
+        getProfileImage().profileImageUrl = url;
+        getProfileImage().urlExpireDateTime = expirationDateTime;
+    }
+
+    public String getProfileImageKey(){
+        return getProfileImage().profileImageKey;
+    }
+
+    public String getProfileImageUrl(){
+        return getProfileImage().profileImageUrl;
+    }
+
+    public boolean isProfileImageUrlValid(){
+        return getProfileImage().profileImageUrl != null
+                && getProfileImage().urlExpireDateTime.isAfter(LocalDateTime.now());
+    }
+
+    public boolean hasProfileImage() {
+        return getProfileImage().profileImageKey != null;
+    }
+
+    public ProfileImage getProfileImage(){
+        if(profileImage == null){
+            profileImage = new ProfileImage();
+        }
+        return profileImage;
     }
 
 }
