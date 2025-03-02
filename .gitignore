@@ -217,5 +217,6 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,java,gradle,intellij,git
 
-src/main/resources/application-local.yml
+src/main/resources/application-*.yml
 /src/main/java/com/spam/whidy/test/*
+./AuthKey_6YY634N45D.p8
