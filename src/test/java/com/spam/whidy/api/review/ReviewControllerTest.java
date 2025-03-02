@@ -32,7 +32,6 @@ class ReviewControllerTest extends ControllerTest{
     @Test
     @DisplayName("장소 리뷰 조회 성공")
     void findByPlaceId_Success() throws Exception {
-        ReviewSearchCondition condition = new ReviewSearchCondition(1L, 0, 10);
         when(reviewService.searchByCondition(any())).thenReturn(List.of());
 
         mockMvc.perform(get("/api/review")
@@ -63,7 +62,7 @@ class ReviewControllerTest extends ControllerTest{
     @Test
     @DisplayName("리뷰 저장 성공")
     void save_Success() throws Exception {
-        ReviewRequest request = new ReviewRequest(1L, 1L, 5.0f, Set.of(), false, null, Set.of(), null);
+        ReviewRequest request = new ReviewRequest(1L, 1L, 5.0f, Set.of(), false, null, Set.of(), null, "comment");
         when(reviewService.save(any(), any())).thenReturn(1L);
 
         mockMvc.perform(post("/api/review")
@@ -75,7 +74,7 @@ class ReviewControllerTest extends ControllerTest{
     @Test
     @DisplayName("리뷰 저장 실패 (유효하지 않은 데이터)")
     void save_Failure_InvalidData() throws Exception {
-        ReviewRequest request = new ReviewRequest(null, null, null, null, false, null, null, null);
+        ReviewRequest request = new ReviewRequest(null, null, null, null, false, null, null, null, "comment");
 
         mockMvc.perform(post("/api/review")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +85,7 @@ class ReviewControllerTest extends ControllerTest{
     @Test
     @DisplayName("리뷰 업데이트 성공")
     void update_Success() throws Exception {
-        ReviewRequest request = new ReviewRequest(1L, 1L, 4.0f, Set.of(), true, null, Set.of(), null);
+        ReviewRequest request = new ReviewRequest(1L, 1L, 4.0f, Set.of(), true, null, Set.of(), null, "comment");
         doNothing().when(reviewService).update(any(), any());
 
         mockMvc.perform(put("/api/review")
