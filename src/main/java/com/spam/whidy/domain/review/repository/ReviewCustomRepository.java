@@ -7,6 +7,6 @@ import com.spam.whidy.dto.review.ReviewSearchCondition;
 import java.util.List;
 
 public interface ReviewCustomRepository {
-    List<ReviewDTO> searchByCondition(ReviewSearchCondition condition);
-    List<ReviewDTO> searchByUserAndCondition(Long userId, ReviewSearchCondition condition);
+    List<Review> searchByCondition(ReviewSearchCondition condition);
+    List<Review> searchByUserAndCondition(Long userId, ReviewSearchCondition condition);
 }
