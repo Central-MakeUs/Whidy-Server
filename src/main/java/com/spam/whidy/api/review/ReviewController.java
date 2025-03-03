@@ -42,7 +42,7 @@ public class ReviewController {
     }
 
     @PutMapping
-    @Operation(summary = "소 리뷰 업데이트")
+    @Operation(summary = "장소 리뷰 업데이트")
     public void update(@Auth LoginUser loginUser, @RequestBody @Valid ReviewRequest request){
         reviewService.update(loginUser.getUserId(), request);
     }
