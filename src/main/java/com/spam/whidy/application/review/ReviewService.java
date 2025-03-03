@@ -1,11 +1,13 @@
 package com.spam.whidy.application.review;
 
 import com.spam.whidy.application.place.PlaceService;
+import com.spam.whidy.application.user.UserFinder;
 import com.spam.whidy.common.exception.BadRequestException;
 import com.spam.whidy.common.exception.ExceptionType;
 import com.spam.whidy.domain.place.Place;
 import com.spam.whidy.domain.review.Review;
 import com.spam.whidy.domain.review.repository.ReviewRepository;
+import com.spam.whidy.domain.user.User;
 import com.spam.whidy.dto.review.ReviewDTO;
 import com.spam.whidy.dto.review.ReviewRequest;
 import com.spam.whidy.dto.review.ReviewSearchCondition;
@@ -15,21 +17,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReviewService {
 
+    private final UserFinder userFinder;
     private final PlaceService placeService;
     private final ReviewRepository reviewRepository;
 
     public List<ReviewDTO> searchByCondition(ReviewSearchCondition condition){
-        return reviewRepository.searchByCondition(condition);
+        List<Review> reviews = reviewRepository.searchByCondition(condition);
+        return reviews.stream().map(ReviewDTO::of).collect(Collectors.toList());
     }
 
     public List<ReviewDTO> searchByUserAndCondition(Long userId, ReviewSearchCondition condition){
-        return reviewRepository.searchByUserAndCondition(userId, condition);
+        List<Review> reviews = reviewRepository.searchByUserAndCondition(userId, condition);
+        return reviews.stream().map(ReviewDTO::of).collect(Collectors.toList());
     }
 
     public Review findById(Long reviewId){
@@ -39,15 +45,17 @@ public class ReviewService {
 
     @Transactional
     public Long save(Long requestUserId, ReviewRequest request){
-        Optional<Review> existingReview = reviewRepository.findByCreateUserAndPlaceId(requestUserId, request.placeId());
+        Optional<Review> existingReview = reviewRepository.findByCreateUserIdAndPlaceId(requestUserId, request.placeId());
         if(existingReview.isPresent()){
             throw new BadRequestException(ExceptionType.REVIEW_CONFLICT);
         }
 
         Place place = placeService.findById(request.placeId());
         place.addReview(request.score());
+        User user = userFinder.findById(requestUserId)
+                .orElseThrow(() -> new BadRequestException(ExceptionType.USER_NOT_FOUND));
 
-        Review review = request.toEntity();
+        Review review = request.toEntity(place, user);
         reviewRepository.save(review);
         return review.getId();
     }
@@ -59,10 +67,10 @@ public class ReviewService {
             throw new BadRequestException(ExceptionType.FORBIDDEN);
         }
 
-        Place place = placeService.findById(request.placeId());
+        Place place = placeService.findById(previousReview.getPlace().getId());
         place.updateReview(previousReview.getScore(), request.score());
 
-        Review newReview = request.toEntity();
+        Review newReview = request.toUpdateEntity();
         previousReview.update(newReview);
     }
 
@@ -73,7 +81,7 @@ public class ReviewService {
             throw new BadRequestException(ExceptionType.FORBIDDEN);
         }
 
-        Place place = placeService.findById(review.getPlaceId());
+        Place place = placeService.findById(review.getPlace().getId());
         place.removeReview(review.getScore());
 
         reviewRepository.delete(review);
