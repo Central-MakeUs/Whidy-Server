@@ -17,7 +17,7 @@ public class StateRepositoryImpl implements StateRepository {
 
     private final RedisClient redisClient;
     private static final String SIGN_UP_INFO_NAMESPACE = "oauth-state:";
-    @Value("${application.property.oauth-state.ttl-minute}")
+    @Value("${application.oauth-state.ttl-minute}")
     private int stateTTL;
 
     @Override

@@ -24,8 +24,8 @@ public class ScrapController {
 
     @PostMapping
     @Operation(summary = "스크랩 저장")
-    public Long save(@RequestBody @Valid ScrapRequest request){
-        return scrapService.save(request);
+    public Long save(@Auth LoginUser loginUser, @RequestBody @Valid ScrapRequest request){
+        return scrapService.save(loginUser.getUserId(), request);
     }
 
     @DeleteMapping("/{scrapId}")

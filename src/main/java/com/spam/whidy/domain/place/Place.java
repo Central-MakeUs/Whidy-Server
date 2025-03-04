@@ -8,8 +8,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,6 +38,13 @@ public class Place {
     @Column(nullable = false, columnDefinition = "geometry")
     private Point coordinates;
     private Integer beveragePrice;
+    @Column(length = 2048)
+    private String thumbnail;
+    @Builder.Default
+    @Column(length = 2048)
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "place_images", joinColumns = @JoinColumn(name = "place_id"))
+    private List<String> images = new ArrayList<>();
     @Builder.Default
     private int reviewNum = 0;
     private Float reviewScore;
@@ -51,11 +62,11 @@ public class Place {
 
 
     public Double getLatitude(){
-        return coordinates.getX();
+        return coordinates.getY();
     }
 
     public Double getLongitude(){
-        return coordinates.getY();
+        return coordinates.getX();
     }
 
     public void addReview(float score) {

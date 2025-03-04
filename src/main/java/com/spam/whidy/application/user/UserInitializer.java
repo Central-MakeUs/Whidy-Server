@@ -15,13 +15,13 @@ public class UserInitializer {
     private final UserFinder userFinder;
     private final UserService userService;
 
-    @Value("${application.property.super-admin.name}")
+    @Value("${application.super-admin.name}")
     private String name;
-    @Value("${application.property.super-admin.oauth-id}")
+    @Value("${application.super-admin.oauth-id}")
     private String oauthId;
-    @Value("${application.property.super-admin.oauth-type}")
+    @Value("${application.super-admin.oauth-type}")
     private String oauthType;
-    @Value("${application.property.super-admin.email}")
+    @Value("${application.super-admin.email}")
     private String email;
 
     @PostConstruct

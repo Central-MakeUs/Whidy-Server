@@ -13,7 +13,7 @@ java {
 }
 
 bootJar {
-    archiveFileName = 'study_map.jar'
+    archiveFileName = 'application.jar'
 }
 
 repositories {
@@ -49,6 +49,10 @@ dependencies {
     //bcrypt
     implementation 'org.mindrot:jbcrypt:0.4'
 
+    // 좌표 검색 처리
+    implementation 'org.hibernate:hibernate-spatial:6.6.5.Final'
+    implementation 'org.locationtech.jts:jts-core'
+
     //etc
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
     implementation 'com.google.code.gson:gson:2.8.9'
@@ -71,9 +75,13 @@ dependencies {
     implementation 'io.github.cdimascio:dotenv-java:2.3.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
+
+    // S3
+    implementation 'software.amazon.awssdk:s3:2.29.52'
 
     // apple oauth
     implementation 'com.nimbusds:oauth2-oidc-sdk:9.23'
@@ -81,6 +89,10 @@ dependencies {
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.4'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+
+    // excel
+    implementation 'org.apache.poi:poi:5.2.3'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
 }
 
 tasks.named('test') {

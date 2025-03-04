@@ -1,5 +1,7 @@
 package com.spam.whidy.infra.place.cafe;
 
+import com.spam.whidy.common.util.DayOfWeekUtil;
+import com.spam.whidy.common.util.HourUtil;
 import com.spam.whidy.domain.place.BusinessHour;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,36 +41,11 @@ public class RawBusinessHourData {
     }
 
     private static LocalTime[] extractTime(String content){
-        Pattern pattern = Pattern.compile("\\b\\d{2}:\\d{2}\\b");
-        Matcher matcher = pattern.matcher(content);
-
-        LocalTime startTime = null;
-        LocalTime endTime = null;
-
-        int count = 0;
-        while (matcher.find()) {
-            if (count == 0) {
-                startTime = LocalTime.parse(matcher.group());
-            } else if (count == 1) {
-                String endTimeString = matcher.group();
-                endTimeString = endTimeString.equals("24:00") ? "00:00" : endTimeString;
-                endTime = LocalTime.parse(endTimeString);
-                break;
-            }
-            count++;
-        }
-        return new LocalTime[]{startTime, endTime};
+        return HourUtil.extractStartAndEndTime(content, ":");
     }
 
     private DayOfWeek extractDayOfWeek() {
-        return switch (dayOfWeek){
-            case "월" -> DayOfWeek.MONDAY;
-            case "화" -> DayOfWeek.TUESDAY;
-            case "수" -> DayOfWeek.WEDNESDAY;
-            case "목" -> DayOfWeek.THURSDAY;
-            case "금" -> DayOfWeek.FRIDAY;
-            case "토" -> DayOfWeek.SATURDAY;
-            default -> DayOfWeek.SUNDAY;
-        };
+        dayOfWeek = dayOfWeek.replaceAll("요일", "");
+        return DayOfWeekUtil.convertKorToEnum(dayOfWeek);
     }
 }

@@ -1,6 +1,8 @@
 package com.spam.whidy.domain.review;
 
-import com.spam.whidy.domain.UserBaseEntity;
+import com.spam.whidy.domain.TimeBaseEntity;
+import com.spam.whidy.domain.place.Place;
+import com.spam.whidy.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,12 +17,13 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review extends UserBaseEntity {
+public class Review extends TimeBaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private Long placeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id", nullable = false)
+    private Place place;
     @Column(nullable = false)
     private Float score;
     @Builder.Default
@@ -28,6 +31,7 @@ public class Review extends UserBaseEntity {
     @ElementCollection(fetch = FetchType.LAZY)
     private Set<ReviewKeyword> keywords = new HashSet<>();
     private Boolean isReserved;
+    private String comment;
     @Enumerated(EnumType.STRING)
     private WaitTime waitTime;
     @Builder.Default
@@ -36,10 +40,11 @@ public class Review extends UserBaseEntity {
     private Set<VisitPurpose> visitPurposes = new HashSet<>();
     @Enumerated(EnumType.STRING)
     private CompanionType companionType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "create_user_id", nullable = false)
+    private User createUser;
 
     public void update(Review newReview) {
-        id = newReview.id;
-        placeId = newReview.placeId;
         score = newReview.score;
         keywords = newReview.keywords;
         isReserved = newReview.isReserved;
@@ -49,6 +54,6 @@ public class Review extends UserBaseEntity {
     }
 
     public boolean isOwner(Long userId){
-        return getCreateUser().equals(userId);
+        return createUser.getId().equals(userId);
     }
 }

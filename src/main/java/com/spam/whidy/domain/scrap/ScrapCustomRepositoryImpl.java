@@ -8,6 +8,7 @@ import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spam.whidy.dto.place.PlaceDTO;
 import com.spam.whidy.dto.scrap.ScrapDTO;
@@ -25,14 +26,18 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
 
     @Override
     public List<ScrapDTO> searchByConditionAndUser(Long userId, ScrapSearchCondition condition) {
-        return queryFactory
+        JPAQuery<ScrapDTO> query = queryFactory
                 .select(scrapDtoProjection())
                 .from(scrap)
                 .join(place).on(scrap.placeId.eq(place.id))
-                .where(allConditions(userId, condition))
-                .offset(condition.offset())
-                .limit(condition.limit())
-                .fetch();
+                .where(allConditions(userId, condition));
+
+        if (condition.limit() != null && condition.offset() != null) {
+            query.limit(condition.limit());
+            query.offset(condition.offset());
+        }
+
+        return query.fetch();
     }
 
     private ConstructorExpression<ScrapDTO> scrapDtoProjection() {
@@ -52,7 +57,9 @@ public class ScrapCustomRepositoryImpl implements ScrapCustomRepository {
                 numberTemplate(Double.class, "ST_X({0})", place.coordinates).as("latitude"),
                 numberTemplate(Double.class, "ST_Y({0})", place.coordinates).as("longitude"),
                 place.beveragePrice,
+                place.reviewNum,
                 place.reviewScore,
+                place.thumbnail,
                 place.placeType
         );
     }

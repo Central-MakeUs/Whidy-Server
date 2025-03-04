@@ -41,6 +41,8 @@ public class AuthTokenService {
         authTokenRepository.deleteRefreshToken(userId);
         Date accessTokenExpirationDate = tokenUtil.getExpireDateFromToken(request.accessToken());
         authTokenRepository.addBlackList(request.accessToken(), accessTokenExpirationDate);
+        Date refreshTokenExpirationDate = tokenUtil.getExpireDateFromToken(request.accessToken());
+        authTokenRepository.addBlackList(request.refreshToken(), refreshTokenExpirationDate);
     }
 
     public boolean isTokenValid(String token) {
