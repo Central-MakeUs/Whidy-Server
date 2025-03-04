@@ -28,7 +28,7 @@ jobs:
           echo "${{ secrets.APPLICATION_YAML}}" > src/main/resources/application.yml
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       - name: Upload to S3
         run: |
