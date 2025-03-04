@@ -30,6 +30,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::590183891444:role/GithubAction
+          aws-region: ap-northeast-2
+
       - name: Upload to S3
         run: |
           zip -r app.zip ./
