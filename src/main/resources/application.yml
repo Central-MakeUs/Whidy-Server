@@ -20,20 +20,25 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 application:
-  property:
-    oauth-state:
-      ttl-minute: 10
-    signup-info:
-      ttl-minute: 2
-    super-admin:
-      name: ${INIT_USER_NAME}
-      oauth-id: ${INIT_USER_OAUTH_ID}
-      oauth-type: ${INIT_USER_OAUTH_TYPE}
-      email: ${INIT_USER_EMAIL}
+  profile:
+    url-ttl-minute: 30
+  s3:
+    region: us-east-1
+    profile:
+      bucket-name: whidy
+  oauth-state:
+    ttl-minute: 10
+  signup-info:
+    ttl-minute: 2
+  super-admin:
+    name: ${INIT_USER_NAME}
+    oauth-id: ${INIT_USER_OAUTH_ID}
+    oauth-type: ${INIT_USER_OAUTH_TYPE}
+    email: ${INIT_USER_EMAIL}
   secret-key: ${SECRET_KEY}
   expiration-time:
-    access-token: 3600000
-    refresh-token: 2592000000
+    access-token: 3600000 # 1시간
+    refresh-token: 2592000000 # 30일
 oauth:
   apple:
     client_id: ${APPLE_CLIENT_ID}
@@ -86,7 +91,7 @@ oauth:
       user_info_uri: https://openapi.naver.com/v1/nid/me
       user_name_attribute: response
   url:
-    success: whidy://home
-#    success: http://localhost:3000/home
-    fail: whidy://sign-up
-#    fail: http://localhost:3000/sign-up
+#    success: whidy://home
+    success: http://localhost:3000/home
+#    fail: whidy://sign-up
+    fail: http://localhost:3000/sign-up
