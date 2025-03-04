@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.illegalArgumentError(errors));
     }
 
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<ErrorResponse> handleBadRequestException(final Exception e) {
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final RuntimeException e) {
         log.error("An unexpected server error occurred", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.serverError());
