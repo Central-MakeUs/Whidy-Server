@@ -9,7 +9,6 @@ import org.openqa.selenium.json.TypeToken;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -24,15 +23,20 @@ public class CafeDataCollector implements PlaceDataCollector {
     private List<String> studyCafes;
     private List<String> franchiseCafes;
 
-    private static final int MIN_REVIEW_NUM = 40;
+    private static final int MIN_REVIEW_NUM_TO_COLLECT = 40;
 
     @Override
     public List<Place> collect() {
         setFilteringCafeKeywords();
         List<CollectedCafeData> details = getCollectedCafeDetails();
         return details.stream()
-                .filter(data -> data.getReviewNum() >= MIN_REVIEW_NUM)
-                .map(data -> data.toEntity(getType(data.getName()))).collect(Collectors.toList());
+                .map(data -> data.toEntity(getType(data.getName())))
+//                .filter(this::isProperToCollect)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isProperToCollect(CollectedCafeData data){
+        return data.getReviewNum() >= MIN_REVIEW_NUM_TO_COLLECT && data.isGoodToFocus();
     }
 
     private PlaceType getType(String cafeName) {
@@ -47,7 +51,8 @@ public class CafeDataCollector implements PlaceDataCollector {
     }
 
     private static List<CollectedCafeData> getCollectedCafeDetails() {
-        String resourcePath = "data/cafe/totalCafeDetail.json";
+//        String resourcePath = "data/cafe/totalCafeDetail.json";
+        String resourcePath = "data/totalCafeDetail.json";
 
         try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {

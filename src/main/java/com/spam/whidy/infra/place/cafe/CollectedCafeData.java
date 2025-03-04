@@ -1,5 +1,6 @@
 package com.spam.whidy.infra.place.cafe;
 
+import com.spam.whidy.common.util.PointUtil;
 import com.spam.whidy.domain.place.BusinessHour;
 import com.spam.whidy.domain.place.Place;
 import com.spam.whidy.domain.place.PlaceType;
@@ -11,10 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,25 +30,37 @@ public class CollectedCafeData {
     private double latitude;
     private double longitude;
     private Integer reviewNum;
-    private List<RawBusinessHourData> times;
-    private List<Menu> menuList;
-    private List<CafeReview> reviews;
-    private List<String> infos;
+    private List<RawBusinessHourData> times = new ArrayList<>();
+    private List<Menu> menuList = new ArrayList<>();
+    private List<CafeReview> reviews = new ArrayList<>();
+    private List<String> infos = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     private static final String CAFE_BEVERAGE_ITEM = "아메리카노";
+    private static final String FOCUS_KEYWORD = "집중하기 좋아요";
 
     public Place toEntity(PlaceType type){
         return Place.builder()
                 .name(name)
                 .address(address)
-                .latitude(latitude)
-                .longitude(longitude)
+                .coordinates(PointUtil.createPoint(latitude, longitude))
                 .beveragePrice(extractBeveragePrice())
                 .reviewScore(null)
                 .additionalInfo(extractCafeAdditionalInfo())
                 .businessHours(extractBusinessHour())
                 .placeType(type)
+                .thumbnail(images.isEmpty() ? null : images.get(0))
+                .images(images)
                 .build();
+    }
+
+    public boolean isGoodToFocus(){
+        for(CafeReview review : reviews){
+            if(review != null && review.getContent().contains(FOCUS_KEYWORD)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<BusinessHour> extractBusinessHour() {

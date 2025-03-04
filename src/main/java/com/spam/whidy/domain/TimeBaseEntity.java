@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public abstract class TimeBaseEntity {
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDateTime;
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDateTime;
 }

@@ -32,6 +32,7 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 .select(selectPlaceDTO())
                 .from(place)
                 .leftJoin(place.businessHours, businessHour)
+                .leftJoin(place.images)
                 .where(allConditions(condition))
                 .distinct()
                 .fetch();
@@ -46,8 +47,10 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 numberTemplate(Double.class, "ST_X({0})", place.coordinates).as("latitude"),
                 numberTemplate(Double.class, "ST_Y({0})", place.coordinates).as("longitude"),
                 place.beveragePrice,
+                place.reviewNum,
                 place.reviewScore,
-                place.placeType
+                place.placeType,
+                place.thumbnail
         );
     }
 
@@ -61,7 +64,8 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
                 businessDayOfWeekIn(condition.businessDayOfWeek()),
                 businessTimeFrom(condition.visitTimeFrom()),
                 businessTimeTo(condition.visitTimeTo()),
-                location(condition)
+                location(condition),
+                keyword(condition.keyword())
         };
     }
 
@@ -95,6 +99,10 @@ public class PlaceCustomRepositoryImpl implements PlaceCustomRepository {
 
     private BooleanExpression businessTimeTo(LocalTime toTime) {
         return toTime != null ? businessHour.closeTime.goe(toTime) : null;
+    }
+
+    private BooleanExpression keyword(String keyword) {
+        return keyword != null ? place.name.contains(keyword).or(place.address.contains(keyword))  : null;
     }
 
     // 반경 검색

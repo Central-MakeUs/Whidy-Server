@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
-
     private String name;
     private String price;
     private String image;

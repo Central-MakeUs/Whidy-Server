@@ -18,7 +18,7 @@ public class SignUpInfoRepositoryImpl implements SignUpInfoRepository {
 
     private final RedisClient redisClient;
     private static final String SIGN_UP_INFO_NAMESPACE = "signup-code:";
-    @Value("${application.property.signup-info.ttl-minute}")
+    @Value("${application.signup-info.ttl-minute}")
     private int signUpInfoTTL;
 
     @Override

@@ -18,8 +18,9 @@ public record PlaceSearchCondition (
         Set<DayOfWeek> businessDayOfWeek,
         LocalTime visitTimeFrom,
         LocalTime visitTimeTo,
-        @NotNull Double centerLatitude,
-        @NotNull Double centerLongitude,
-        @NotNull Double radius
+        Double centerLatitude,
+        Double centerLongitude,
+        Double radius,
+        String keyword
 ){
 }

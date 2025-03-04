@@ -1,18 +1,12 @@
 package com.spam.whidy.dto.place;
 
-import com.google.gson.Gson;
-import com.querydsl.core.annotations.QueryProjection;
-import com.spam.whidy.domain.place.BusinessHour;
-import com.spam.whidy.domain.place.Place;
 import com.spam.whidy.domain.place.PlaceType;
 import lombok.*;
 
-import java.util.Set;
-
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class PlaceDTO {
 
     private Long id;
@@ -21,20 +15,9 @@ public class PlaceDTO {
     private double latitude;
     private double longitude;
     private Integer beveragePrice;
+    private Integer reviewNum;
     private Float reviewScore;
     private PlaceType placeType;
+    private String thumbnail;
 
-    public static PlaceDTO of(Place place){
-        return PlaceDTO.builder()
-                .id(place.getId())
-                .name(place.getName())
-                .address(place.getAddress())
-                .latitude(place.getLatitude())
-                .longitude(place.getLongitude())
-                .beveragePrice(place.getBeveragePrice())
-                .reviewScore(place.getReviewScore())
-                .placeType(place.getPlaceType())
-//                .additionalInfo(gson.toJson(place.getAdditionalInfo()))
-                .build();
-    }
 }
