@@ -11,21 +11,26 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6380
+      port: 6379
   config:
     activate:
       on-profile: test
 application:
-  property:
-    oauth-state:
-      ttl-minute: 10
-    signup-info:
-      ttl-minute: 2
-    super-admin:
-      name: a
-      oauth-id: a
-      oauth-type: KAKAO
-      email: a
+  profile:
+    url-ttl-minute: 30
+  s3:
+    region: us-east-1
+    profile:
+      bucket-name: whidy
+  oauth-state:
+    ttl-minute: 10
+  signup-info:
+    ttl-minute: 2
+  super-admin:
+    name: a
+    oauth-id: a
+    oauth-type: KAKAO
+    email: a
   secret-key: as97das78d6awli121oi24hasdfas1872sadkjhg9928hsidjnbf367
   expiration-time:
     access-token: 3600000
