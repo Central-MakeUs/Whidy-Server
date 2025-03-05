@@ -51,6 +51,7 @@ public class Review extends TimeBaseEntity {
         waitTime = newReview.waitTime;
         visitPurposes = newReview.visitPurposes;
         companionType = newReview.companionType;
+        comment = newReview.comment;
     }
 
     public boolean isOwner(Long userId){
