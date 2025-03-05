@@ -29,23 +29,30 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateProfileImage(Long userId, MultipartFile file) {
+    public String updateProfileImage(Long userId, MultipartFile file) {
         User user = findUserById(userId);
         String imageKey = null;
         if(!file.isEmpty()){
             imageKey = profileImageStorage.upload(file, userId);
         }
         user.updateProfileKey(imageKey);
+        return updateAndReturnImageUrl(user);
     }
 
     public ProfileResponse getProfile(Long userId){
         User user = findUserById(userId);
+        String profileImageUrl = user.getProfileImageUrl();
         if(user.hasProfileImage() && !user.isProfileImageUrlValid()){
-            String newImageUrl = profileImageStorage.getImageUrl(user.getProfileImageKey(), profileImageUrlTtlMinute);
-            LocalDateTime urlExpirationDateTime = LocalDateTime.now().plusMinutes(profileImageUrlTtlMinute);
-            user.updateProfileImageUrl(newImageUrl, urlExpirationDateTime);
+            profileImageUrl = updateAndReturnImageUrl(user);
         }
-        return new ProfileResponse(user.getName(), user.getProfileImageUrl());
+        return new ProfileResponse(user.getName(), profileImageUrl);
+    }
+
+    public String updateAndReturnImageUrl(User user) {
+        String newImageUrl = profileImageStorage.getImageUrl(user.getProfileImageKey(), profileImageUrlTtlMinute);
+        LocalDateTime urlExpirationDateTime = LocalDateTime.now().plusMinutes(profileImageUrlTtlMinute);
+        user.updateProfileImageUrl(newImageUrl, urlExpirationDateTime);
+        return newImageUrl;
     }
 
     public void updateRole(Long userId, Role role) {
