@@ -51,8 +51,8 @@ public class MyPageController {
 
     @PatchMapping("/profile-image")
     @Operation(summary = "프로필 사진 업데이트")
-    public void updateProfileImage(@Auth LoginUser loginUser, @RequestParam MultipartFile file){
-        userService.updateProfileImage(loginUser.getUserId(), file);
+    public String updateProfileImage(@Auth LoginUser loginUser, @RequestParam MultipartFile file){
+        return userService.updateProfileImage(loginUser.getUserId(), file);
     }
 
     @GetMapping("/profile")
