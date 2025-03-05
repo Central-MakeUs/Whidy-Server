@@ -23,3 +23,6 @@
 - ✅ CI/CD : GitHub Actions, Code Deploy 
 - ✅ Infra : AWS 
 
+###  인프라 및 CICD 구성도
+
+![infra.jpg](images%2Finfra.jpg)
