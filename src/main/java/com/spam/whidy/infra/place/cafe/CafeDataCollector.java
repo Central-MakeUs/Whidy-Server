@@ -6,6 +6,7 @@ import com.spam.whidy.domain.place.PlaceDataCollector;
 import com.spam.whidy.domain.place.PlaceType;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.json.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -22,6 +23,8 @@ public class CafeDataCollector implements PlaceDataCollector {
 
     private List<String> studyCafes;
     private List<String> franchiseCafes;
+    @Value("${application.data.file-path}")
+    private String dataFilePath;
 
     private static final int MIN_REVIEW_NUM_TO_COLLECT = 40;
 
@@ -50,11 +53,8 @@ public class CafeDataCollector implements PlaceDataCollector {
         }
     }
 
-    private static List<CollectedCafeData> getCollectedCafeDetails() {
-//        String resourcePath = "data/cafe/totalCafeDetail.json";
-        String resourcePath = "data/totalCafeDetail.json";
-
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+    private List<CollectedCafeData> getCollectedCafeDetails() {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataFilePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             Gson gson = new Gson();
             Type listType = new TypeToken<List<CollectedCafeData>>() {}.getType();

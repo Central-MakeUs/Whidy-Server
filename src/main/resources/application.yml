@@ -20,6 +20,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 application:
+  data:
+    file-path: ${DATA_FILE_PATH}
   profile:
     url-ttl-minute: 30
   s3:

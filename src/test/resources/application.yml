@@ -16,6 +16,8 @@ spring:
     activate:
       on-profile: test
 application:
+  data:
+    file-path: /
   profile:
     url-ttl-minute: 30
   s3:
