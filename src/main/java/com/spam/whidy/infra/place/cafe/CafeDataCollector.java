@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -54,7 +55,8 @@ public class CafeDataCollector implements PlaceDataCollector {
     }
 
     private List<CollectedCafeData> getCollectedCafeDetails() {
-        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataFilePath);
+//        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(dataFilePath);
+        try (InputStream inputStream = new FileInputStream(dataFilePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             Gson gson = new Gson();
             Type listType = new TypeToken<List<CollectedCafeData>>() {}.getType();

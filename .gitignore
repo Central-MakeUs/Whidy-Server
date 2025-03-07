@@ -219,4 +219,5 @@ gradle-app.setting
 
 src/main/resources/application-*.yml
 /src/main/java/com/spam/whidy/test/*
-./AuthKey_6YY634N45D.p8
+AuthKey_6YY634N45D.p8
+HELP.md
